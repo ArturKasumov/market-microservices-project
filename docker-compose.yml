@@ -1,0 +1,201 @@
+version: '3'
+services:
+
+  postgres:
+    container_name: postgres-container
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: arturk2308
+      POSTGRES_USER: arturk
+      POSTGRES_DB: market
+    volumes:
+      - market_db_data:/var/lib/postgresql/data
+      - ./docker-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - market-app-network
+
+  pgadmin:
+    container_name: pgadmin-container
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: 1234
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8888:80"
+    networks:
+      - market-app-network
+
+  elasticsearch:
+    image: elasticsearch:7.17.0  # Используйте актуальную версию Elasticsearch
+    container_name: elasticsearch-container
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node  # Настройка для одиночного узла
+      - xpack.security.enabled=true # Включение безопасности
+      - ELASTIC_USERNAME=elastic    # Логин суперпользователя
+      - ELASTIC_PASSWORD=arturk2308 # Пароль суперпользователя
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g  # Настройка памяти для Elasticsearch
+    ports:
+      - "9200:9200"  # Проброс порта для Elasticsearch
+    networks:
+      - market-app-network
+
+  kibana:
+    image: kibana:7.17.0  # Используйте ту же версию, что и Elasticsearch
+    container_name: kibana-container
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Ссылка на контейнер Elasticsearch
+      - ELASTICSEARCH_USERNAME=elastic  # Логин суперпользователя Elasticsearch
+      - ELASTICSEARCH_PASSWORD=arturk2308 # Пароль суперпользователя Elasticsearch
+    ports:
+      - "5601:5601"  # Проброс порта для Kibana
+    depends_on:
+      - elasticsearch  # Убедитесь, что Elasticsearch запущен перед Kibana
+    networks:
+      - market-app-network
+
+
+  logstash:
+    image: logstash:7.17.0  # Логсташ должен быть той же версии, что и Elasticsearch
+    container_name: logstash-container
+    volumes:
+      - ./docker-init/logstash.conf:/usr/share/logstash/pipeline/logstash.conf  # Путь до вашего конфигурационного файла Logstash
+    environment:
+      - xpack.monitoring.enabled=true  # Включение мониторинга Logstash
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=arturk2308
+    ports:
+      - "5000:5000"  # Порт для приема данных от других сервисов (например, от приложений)
+    depends_on:
+      - elasticsearch
+    networks:
+      - market-app-network
+
+
+  #  zookeeper:
+  #    image: confluentinc/cp-zookeeper:latest
+  #    container_name: zookeeper-container
+  #    restart: unless-stopped
+  #    networks:
+  #      - food-delivery-network
+  #    ports:
+  #      - "2181:2181"
+  #    environment:
+  #      ZOOKEEPER_CLIENT_PORT: 2181
+  #
+  #
+  #  kafka:
+  #    image: confluentinc/cp-kafka:latest
+  #    container_name: kafka-container
+  #    restart: unless-stopped
+  #    depends_on:
+  #      - zookeeper
+  #    networks:
+  #      - food-delivery-network
+  #    ports:
+  #      - "29092:29092"
+  #    environment:
+  #      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+  #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #
+  #  init-kafka:
+  #    image: confluentinc/cp-kafka:latest
+  #    depends_on:
+  #      - kafka
+  #    entrypoint: [ '/bin/sh', '-c' ]
+  #    networks:
+  #      - food-delivery-network
+  #    command: |
+  #      "
+  #      # blocks until kafka is reachable
+  #      kafka-topics --bootstrap-server kafka:9092 --list
+  #
+  #      echo -e 'Creating kafka topics'
+  #      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic dev_orders --replication-factor 1 --partitions 2
+  #
+  #      echo -e 'Successfully created the following topics:'
+  #      kafka-topics --bootstrap-server kafka:9092 --list
+  #      "
+  #
+  #  kafka-ui:
+  #    image: provectuslabs/kafka-ui:latest
+  #    container_name: kafka-ui-container
+  #    restart: unless-stopped
+  #    depends_on:
+  #      - kafka
+  #    networks:
+  #      - food-delivery-network
+  #    ports:
+  #      - "9081:8080"
+  #    environment:
+  #      KAFKA_CLUSTERS_0_NAME: local
+  #      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+  #
+  mongo:
+    container_name: mongo_container
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      # admin user that has access to admin database
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: pwd
+      # initialize custom database
+      MONGO_INITDB_DATABASE: market
+    volumes:
+      - ./docker-init/mongo-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - 26007:27007
+      - 26018:27017
+    networks:
+      - market-app-network
+#
+#  redis:
+#    image: redis:latest
+#    container_name: redis_container
+#    restart: unless-stopped
+#    environment:
+#      # Пароль для Redis (имя пользователя по умолчанию - default)
+#      - REDIS_PASSWORD=pwd
+#      - REDIS_USER=arturk
+#      - REDIS_USER_PASSWORD=arturk2308
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - ./redisdata:/data
+#    networks:
+#      - food-delivery-network
+#    command: >
+#      sh -c '
+#        mkdir -p /usr/local/etc/redis &&
+#        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
+#        echo "requirepass pwd" >> /usr/local/etc/redis/redis.conf &&
+#        echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
+#        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
+#        echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
+#        echo "user arturk on >arturk2308 ~* +@all" >> /usr/local/etc/redis/users.acl &&
+#        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
+#      '
+##mkdir -p /usr/local/etc/redis: Эта команда создает директорию /usr/local/etc/redis, если она не существует. Флаг -p позволяет создавать вложенные директории при необходимости.
+##echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf: Здесь мы добавляем строку "bind 0.0.0.0" в файл redis.conf. Это позволяет Redis прослушивать соединения со всех IP-адресов.
+##echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf: Эта команда добавляет строку с паролем в файл redis.conf. Пароль берется из переменной окружения $REDIS_PASSWORD.
+##echo "appendonly yes" >> /usr/local/etc/redis/redis.conf: Здесь мы включаем режим журнала (append-only mode) для сохранения данных на диск.
+##echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf: Эта строка указывает Redis выполнять синхронизацию журнала с диском каждую секунду.
+##echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl: Здесь мы создаем файл users.acl и добавляем правило доступа для пользователя по умолчанию. Он может подключаться без пароля и имеет доступ ко всем командам (~* +@all).
+##echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl: Эта команда добавляет правило доступа для конкретного пользователя (с именем, указанным в переменной $REDIS_USER). Пользователь должен предоставить пароль из переменной $REDIS_USER_PASSWORD.
+##redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl: Здесь мы запускаем Redis-сервер с указанным файлом конфигурации и файлом ACL.
+
+volumes:
+  market_db_data:
+
+networks:
+  market-app-network:
+    driver: bridge
