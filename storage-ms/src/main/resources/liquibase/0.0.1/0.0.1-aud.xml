@@ -1,0 +1,44 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.26.xsd"
+                   logicalFilePath="liquibase/0.0.1/0.0.1-aud.xml">
+
+    <changeSet id="0.0.1-aud-1" author="arturk">
+        <createTable tableName="REVINFO">
+            <column name="REV" type="BIGINT"/>
+            <column name="TIMESTAMP" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="0.0.1-aud-2" author="arturk">
+        <createSequence cacheSize="100" incrementBy="1" sequenceName="REVINFO_SEQ" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="0.0.1-aud-3" author="arturk">
+        <createTable tableName="MANUFACTURER_AUD">
+            <column name="ID" type="BIGINT"/>
+            <column name="NAME" type="VARCHAR2(50)"/>
+            <column name="REV" type="BIGINT"/>
+            <column name="REVTYPE" type="INTEGER"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="MANUFACTURER_AUD"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0.0.1-aud-4" author="arturk">
+        <createTable tableName="PRODUCT_AUD">
+            <column name="ID" type="BIGINT"/>
+            <column name="NAME" type="VARCHAR2(50)"/>
+            <column name="QUANTITY" type="INTEGER"/>
+            <column name="CATEGORY" type="VARCHAR2(50)"/>
+            <column name="MANUFACTURER_ID" type="BIGINT"/>
+            <column name="REV" type="BIGINT"/>
+            <column name="REVTYPE" type="INTEGER"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="PRODUCT_AUD"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
