@@ -2,6 +2,7 @@ package com.arturk.storage.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum ProductCategoryEnum {
 
     CHAIR ("Chair"),
@@ -12,7 +13,6 @@ public enum ProductCategoryEnum {
     DESK ("Desk"),
     SHELF ("Shelf");
 
-    @Getter
     private final String category;
 
     ProductCategoryEnum(String category) {

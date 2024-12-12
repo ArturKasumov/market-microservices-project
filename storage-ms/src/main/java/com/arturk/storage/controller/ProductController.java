@@ -2,17 +2,19 @@ package com.arturk.storage.controller;
 
 import com.arturk.storage.dto.ProductDto;
 import com.arturk.storage.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/v4/product")
-public class StorageController {
+public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,10 +30,10 @@ public class StorageController {
         return ResponseEntity.ok(productDto);
     }
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @RequestMapping(value = "/{productId}", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto product) {
-        ProductDto productDto = productService.updateProduct(product);
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @RequestBody ProductDto product) {
+        ProductDto productDto = productService.updateProduct(productId, product);
         return ResponseEntity.ok(productDto);
     }
 
@@ -40,5 +42,19 @@ public class StorageController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProductById(productId);
         return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> productDtoList = productService.getAllProducts();
+        return ResponseEntity.ok(productDtoList);
+    }
+
+    @RequestMapping(value = "/manufacturer/{manufacturerId}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductDto>> getAllProductsByManufacturer(@PathVariable Long manufacturerId) {
+        List<ProductDto> productDtoList = productService.getAllProductsByManufacturer(manufacturerId);
+        return ResponseEntity.ok(productDtoList);
     }
 }

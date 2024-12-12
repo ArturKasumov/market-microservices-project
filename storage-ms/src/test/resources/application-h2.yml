@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS storage;NON_KEYWORDS=KEY,VALUE
+    password: pwd
+    username: sa
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/master.xml
+    default-schema: storage
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: storage

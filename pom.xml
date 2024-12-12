@@ -18,8 +18,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>storage-ms</module>
         <module>common</module>
+        <module>storage-ms</module>
         <module>order-ms</module>
     </modules>
 
@@ -72,10 +72,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
