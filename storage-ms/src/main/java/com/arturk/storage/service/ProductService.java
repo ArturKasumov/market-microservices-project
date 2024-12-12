@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class ProductService {
@@ -43,8 +46,8 @@ public class ProductService {
         return productConvertor.toProductDto(productEntity);
     }
 
-    public ProductDto updateProduct(ProductDto product) {
-        ProductEntity productEntity = productRepository.findById(product.getId())
+    public ProductDto updateProduct(Long productId, ProductDto product) {
+        ProductEntity productEntity = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
         log.debug("Updating product with id: {} started", productEntity.getId());
         if (product.getName() != null) {
@@ -69,5 +72,19 @@ public class ProductService {
 
     public void deleteProductById(Long productId) {
         productRepository.deleteById(productId);
+    }
+
+    public List<ProductDto> getAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(productConvertor::toProductDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getAllProductsByManufacturer(Long manufacturerId) {
+        return productRepository.getAllByManufacturerId(manufacturerId)
+                .stream()
+                .map(productConvertor::toProductDto)
+                .collect(Collectors.toList());
     }
 }
