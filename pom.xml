@@ -14,7 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>market</name>
-    <description>market</description>
+    <description>market-microservices</description>
     <packaging>pom</packaging>
 
     <modules>
