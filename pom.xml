@@ -21,6 +21,7 @@
         <module>common</module>
         <module>storage-ms</module>
         <module>order-ms</module>
+        <module>customer-ms</module>
     </modules>
 
     <properties>
