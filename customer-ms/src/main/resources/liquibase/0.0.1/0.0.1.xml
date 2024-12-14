@@ -17,6 +17,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="CUSTOMER_PK"/>
             </column>
             <column name="NAME" type="VARCHAR2(50)"/>
+            <column name="AMOUNT_MONEY" type="INTEGER"/>
         </createTable>
         <rollback>
             <dropTable tableName="CUSTOMER"/>

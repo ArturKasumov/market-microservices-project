@@ -1,8 +1,8 @@
 package com.arturk.storage.exception;
 
-import com.arturk.common.exception.MarketAppException;
+import com.arturk.common.exception.BusinessMarketAppException;
 
-public class ProductNotFoundException extends MarketAppException {
+public class ProductNotFoundException extends BusinessMarketAppException {
 
     private final static String code = "STORAGE_MS-01";
 
