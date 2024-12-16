@@ -4,6 +4,8 @@ import com.arturk.customer.convertor.CustomerConvertor;
 import com.arturk.customer.dto.CustomerDto;
 import com.arturk.customer.entity.CustomerEntity;
 import com.arturk.customer.entity.repository.CustomerRepository;
+import com.arturk.customer.exception.CustomerNotFoundException;
+import com.arturk.customer.exception.MoneyNotAvailableException;
 import com.arturk.customer.exception.ProvidedIdException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +43,19 @@ public class CustomerService {
 
     public void deleteCustomerById(Long customerId) {
         customerRepository.deleteById(customerId);
+    }
+
+    public void credit(Long customerId, Integer amount) {
+        CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+        customerEntity.setAmountOfMoney(customerEntity.getAmountOfMoney() + amount);
+        customerRepository.save(customerEntity);
+    }
+
+    public void debit(Long customerId, Integer amount) {
+        CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+        if(customerEntity.getAmountOfMoney() < amount) {
+            throw new MoneyNotAvailableException();
+        }
+        customerEntity.setAmountOfMoney(customerEntity.getAmountOfMoney() - amount);
     }
 }
