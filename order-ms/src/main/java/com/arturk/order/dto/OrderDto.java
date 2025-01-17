@@ -6,10 +6,13 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class OrderDto {
+
+    private UUID orderUuid = UUID.randomUUID();
 
     private Integer customerId;
 

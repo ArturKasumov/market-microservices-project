@@ -11,3 +11,11 @@ spring:
       username: arturk
       password: arturk2308
       database: market
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+kafka:
+  bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER:127.0.0.1:29092}
+  topic-name:
+    order-created: order_created_dev
