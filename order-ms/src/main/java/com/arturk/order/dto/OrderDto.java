@@ -1,5 +1,6 @@
 package com.arturk.order.dto;
 
+import com.arturk.order.enums.OrderStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,13 @@ import java.util.List;
 @Setter
 public class OrderDto {
 
-    private List<OrderItemDto> orderItems;
-    private LocalDateTime orderDate = LocalDateTime.now();
+    private Integer customerId;
+
+    private LocalDateTime createdDate = LocalDateTime.now();
+
     private String comment;
+
+    private OrderStatusEnum orderStatus;
+
+    private List<OrderItemDto> orderItems;
 }

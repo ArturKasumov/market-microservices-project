@@ -19,9 +19,8 @@ public class OrderController {
 
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createOrder(@RequestBody OrderDto order) {
-        orderService.createOrder(order);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto order) {
+        return ResponseEntity.ok(orderService.createOrder(order));
     }
 
 }
