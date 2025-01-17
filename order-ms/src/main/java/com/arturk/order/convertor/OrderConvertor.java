@@ -21,13 +21,26 @@ public abstract class OrderConvertor {
     @Mappings({
             @Mapping(target = "orderItems", source = "orderItems", qualifiedByName = "toOrderItems")
     })
-    public abstract OrderEntity toOrder(OrderDto source);
+    public abstract OrderEntity toOrderEntity(OrderDto source);
+
+    @Mappings({
+            @Mapping(target = "orderItems", source = "orderItems", qualifiedByName = "fromOrderItems")
+    })
+    public abstract OrderDto toOrderDto(OrderEntity source);
 
     @Named("toOrderItems")
     public List<OrderEntity.OrderItem> toOrderItems(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos
                 .stream()
                 .map(orderItemDto -> orderItemConvertor.toOrderItem(orderItemDto))
+                .collect(Collectors.toList());
+    }
+
+    @Named("fromOrderItems")
+    public List<OrderItemDto> fromOrderItems(List<OrderEntity.OrderItem> orderItems) {
+        return orderItems
+                .stream()
+                .map(orderItem -> orderItemConvertor.toOrderItemDto(orderItem))
                 .collect(Collectors.toList());
     }
 }

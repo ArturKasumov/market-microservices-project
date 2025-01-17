@@ -8,5 +8,7 @@ import org.mapstruct.Mapper;
 public abstract class OrderItemConvertor {
 
     abstract OrderEntity.OrderItem toOrderItem(OrderItemDto source);
+
+    abstract OrderItemDto toOrderItemDto(OrderEntity.OrderItem source);
 }
 

@@ -1,0 +1,13 @@
+server:
+  port: 1030
+
+spring:
+  application:
+    name: order-microservice
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      username: arturk
+      password: arturk2308
+      database: market
