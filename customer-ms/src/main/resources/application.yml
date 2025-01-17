@@ -1,16 +1,9 @@
 server:
-  port: 1010
+  port: 1020
 
 spring:
   application:
-    name: storage-microservice
-  cloud:
-    aws:
-      s3:
-        region: us-east-1
-      credentials:
-        secret-key: ${AWS_SECRET_KEY:1234}
-        access-key: ${AWS_ACCESS_KEY:1234}
+    name: customer-microservice
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/market}
@@ -19,12 +12,10 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:liquibase/master.xml
-    default-schema: storage
+    default-schema: customer
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        default_schema: storage
-reports:
-  location: storage-ms/target/generated-files/
+        default_schema: customer

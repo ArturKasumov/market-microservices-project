@@ -12,7 +12,7 @@
     <logger name="org.springframework.http" level="ERROR"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>storage-ms/target/logs/application.log</file>
+        <file>customer-ms/target/logs/application.log</file>
         <append>true</append>
         <immediateFlush>true</immediateFlush>
         <encoder>
@@ -20,7 +20,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>storage-ms/target/logs/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>customer-ms/target/logs/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -35,7 +35,7 @@
         <port>5000</port> <!-- Используемый порт Logstash (по умолчанию) -->
 
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"application_name":"storage-ms"}</customFields>
+            <customFields>{"application_name":"customer-ms"}</customFields>
         </encoder>
     </appender>
 

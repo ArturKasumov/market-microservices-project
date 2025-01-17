@@ -18,6 +18,11 @@ public class RestException {
         this.description = description;
     }
 
+    public RestException(String code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+
     public RestException(String code, String description, String details) {
         this.code = code;
         this.description = description;

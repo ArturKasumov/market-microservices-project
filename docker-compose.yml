@@ -166,8 +166,8 @@ services:
     volumes:
       - ./docker-init/mongo-init:/docker-entrypoint-initdb.d:ro
     ports:
-      - 26007:27007
-      - 26018:27017
+      - 27007:27007
+      - 27017:27017
     networks:
       - market-app-network
 #
