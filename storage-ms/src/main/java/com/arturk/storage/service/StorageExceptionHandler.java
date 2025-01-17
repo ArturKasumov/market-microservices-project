@@ -1,6 +1,6 @@
 package com.arturk.storage.service;
 
-import com.arturk.common.exception.MarketAppException;
+import com.arturk.common.exception.BusinessMarketAppException;
 import com.arturk.common.exception.RestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class StorageExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MarketAppException.class)
-    public ResponseEntity<RestException> handleCustomerNotFound(MarketAppException exception) {
+    @ExceptionHandler(BusinessMarketAppException.class)
+    public ResponseEntity<RestException> handleCustomerNotFound(BusinessMarketAppException exception) {
         log.error("Error occurred", exception);
         RestException restException = new RestException(exception.getCode(), exception.getDescription(), exception.getDetails());
         return new ResponseEntity<>(restException, HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));

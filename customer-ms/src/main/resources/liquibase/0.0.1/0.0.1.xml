@@ -1,0 +1,27 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.26.xsd"
+                   logicalFilePath="liquibase/0.0.1/0.0.1.xml">
+
+    <changeSet id="0.0.1-1" author="arturk">
+        <createSequence sequenceName="ID_SEQ" incrementBy="1" minValue="1" maxValue="9999999999999" startValue="1"
+                        cacheSize="1"/>
+        <rollback>
+            <dropSequence sequenceName="ID_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0.0.1-2" author="arturk">
+        <createTable tableName="CUSTOMER">
+            <column name="ID" type="BIGINT" defaultValueComputed="nextval('ID_SEQ')">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="CUSTOMER_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50)"/>
+            <column name="AMOUNT_MONEY" type="INTEGER"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="CUSTOMER"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

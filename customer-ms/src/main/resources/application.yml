@@ -1,0 +1,21 @@
+server:
+  port: 1020
+
+spring:
+  application:
+    name: customer-microservice
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/market}
+    username: ${DATASOURCE_USERNAME:arturk}
+    password: ${DATASOURCE_PWD:arturk2308}
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/master.xml
+    default-schema: customer
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: customer

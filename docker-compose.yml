@@ -1,6 +1,19 @@
 version: '3'
 services:
 
+  storage-ms:
+    container_name: storage-ms-container
+    image: storage-ms:latest
+    restart: unless-stopped
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://postgres/market
+      DATASOURCE_USERNAME: arturk
+      DATASOURCE_PWD: arturk2308
+    ports:
+      - 1010:1010
+    networks:
+      - market-app-network
+
   postgres:
     container_name: postgres-container
     image: postgres:latest
@@ -13,7 +26,7 @@ services:
       - market_db_data:/var/lib/postgresql/data
       - ./docker-init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - 5432:5432
     networks:
       - market-app-network
 
@@ -28,7 +41,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 1234
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "8888:80"
+      - 8888:80
     networks:
       - market-app-network
 
@@ -153,8 +166,8 @@ services:
     volumes:
       - ./docker-init/mongo-init:/docker-entrypoint-initdb.d:ro
     ports:
-      - 26007:27007
-      - 26018:27017
+      - 27007:27007
+      - 27017:27017
     networks:
       - market-app-network
 #
