@@ -1,0 +1,33 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.26.xsd"
+                   logicalFilePath="liquibase/0.0.2/0.0.2.xml">
+
+    <changeSet id="0.0.2-1" author="arturk">
+        <createSequence sequenceName="IMAGE_ID_SEQ" incrementBy="1" minValue="1" maxValue="9999999999999" startValue="1"
+                        cacheSize="1"/>
+        <rollback>
+            <dropSequence sequenceName="IMAGE_ID_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0.0.2-2" author="arturk">
+        <createTable tableName="IMAGE">
+            <column name="ID" type="BIGINT" defaultValueComputed="nextval('IMAGE_ID_SEQ')">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="IMAGES_PK"/>
+            </column>
+            <column name="URL" type="VARCHAR2(500)"/>
+            <column name="PRODUCT_ID" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="IMAGE" baseColumnNames="PRODUCT_ID"
+                                 constraintName="IMAGE_PRODUCT_ID_FK" referencedTableName="PRODUCT"
+                                 referencedColumnNames="ID"/>
+        <rollback>
+            <dropTable tableName="IMAGE"/>
+        </rollback>
+        <rollback>
+            <dropTable tableName="MANUFACTURER"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

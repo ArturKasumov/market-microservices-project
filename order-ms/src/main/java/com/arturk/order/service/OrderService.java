@@ -1,6 +1,7 @@
 package com.arturk.order.service;
 
 import com.arturk.order.convertor.OrderConvertor;
+import com.arturk.order.dto.OrderCreatedEvent;
 import com.arturk.order.dto.OrderDto;
 import com.arturk.order.entity.OrderEntity;
 import com.arturk.order.entity.repository.OrderRepository;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderService {
 
-    @Value("${kafka.topic-name.order-created}")
+    @Value("${kafka.topic-name.order_created}")
     private String orderCreatedTopic;
 
     private final OrderRepository orderRepository;
@@ -29,8 +30,16 @@ public class OrderService {
         orderEntity.setOrderStatus(OrderStatusEnum.PENDING);
         orderEntity = orderRepository.save(orderEntity);
         OrderDto orderDto = orderConvertor.toOrderDto(orderEntity);
-        kafkaTemplate.send(orderCreatedTopic, orderDto.getOrderUuid().toString(), orderDto);
+        kafkaTemplate.send(orderCreatedTopic, orderDto.getOrderUuid().toString(), createOrderCreatedEvent(orderDto));
         log.debug("Creating order flow finished");
         return orderDto;
+    }
+
+    private OrderCreatedEvent createOrderCreatedEvent(OrderDto orderDto) {
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
+        orderCreatedEvent.setOrderUuid(orderDto.getOrderUuid());
+        orderCreatedEvent.setOrderItems(orderDto.getOrderItems());
+        orderCreatedEvent.setCustomerId(Long.valueOf(orderDto.getCustomerId()));
+        return orderCreatedEvent;
     }
 }

@@ -10,6 +10,7 @@ import com.arturk.storage.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class ProductService {
     private ManufacturerRepository manufacturerRepository;
     @Autowired
     private ProductConvertor productConvertor;
+    @Autowired
+    private S3BucketService s3BucketService;
 
     public ProductDto createProduct(ProductDto product) {
         log.debug("Creating product started");
@@ -59,6 +62,9 @@ public class ProductService {
         if (product.getCategory() != null) {
             productEntity.setCategory(product.getCategory());
         }
+        if (product.getPrice() != null) {
+            productEntity.setPrice(product.getPrice());
+        }
         if (product.getManufacturerId() != null) {
             productEntity.setManufacturer(
                     manufacturerRepository.findById(product.getManufacturerId())
@@ -86,5 +92,15 @@ public class ProductService {
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());
+    }
+
+    public Double getProductPrice(Long productId) {
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+        return productEntity.getPrice();
+    }
+
+    public void uploadImagesForProduct(Long productId, MultipartFile[] productImages) {
+
     }
 }

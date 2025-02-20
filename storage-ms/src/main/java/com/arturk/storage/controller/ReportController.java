@@ -18,7 +18,7 @@ public class ReportController {
     private ReportService reportService;
 
     @RequestMapping(value = "/manufacturer", method = RequestMethod.GET)
-    public ResponseEntity<Void> generateManufacturerPDFReport() throws DocumentException, IOException {
+    public ResponseEntity<Void> generateManufacturerPDFReport() {
         reportService.generateManufacturerPDFReport();
         return ResponseEntity.ok().build();
     }

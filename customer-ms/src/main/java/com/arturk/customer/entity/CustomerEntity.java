@@ -1,5 +1,6 @@
 package com.arturk.customer.entity;
 
+import com.arturk.customer.exception.MoneyNotAvailableException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,16 @@ public class CustomerEntity {
     private String name;
 
     @Column(name = "AMOUNT_MONEY")
-    private Integer amountOfMoney;
+    private Double amountOfMoney;
+
+    public void credit(double amount) {
+        this.setAmountOfMoney(this.getAmountOfMoney() + amount);
+    }
+
+    public void debit(double amount) {
+        if (this.getAmountOfMoney() < amount) {
+            throw new MoneyNotAvailableException();
+        }
+        this.setAmountOfMoney(this.getAmountOfMoney() - amount);
+    }
 }

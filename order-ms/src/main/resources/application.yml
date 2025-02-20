@@ -17,5 +17,9 @@ spring:
 
 kafka:
   bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER:127.0.0.1:29092}
+  group-id: order-ms-dev
   topic-name:
-    order-created: order_created_dev
+    order_created: order_created_dev
+    storage_event: storage_event_dev
+    payment_event: payment_event_dev
+    storage_recovery_event: storage_recovery_event_dev

@@ -10,6 +10,7 @@
     <logger name="org.hibernate.SQL" level="ERROR" />
     <logger name="org.hibernate.type" level="ERROR" />
     <logger name="org.springframework.http" level="ERROR"/>
+    <logger name="com.arturk.customer.service" level="DEBUG"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>customer-ms/target/logs/application.log</file>
