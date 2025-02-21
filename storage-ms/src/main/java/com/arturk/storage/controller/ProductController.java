@@ -17,9 +17,11 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @RequestMapping(method = RequestMethod.POST,
+    @RequestMapping(
+            method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto product) {
         ProductDto productDto = productService.createProduct(product);
         return ResponseEntity.ok(productDto);
@@ -43,8 +45,20 @@ public class ProductController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
-                                                    @RequestBody ProductDto product) {
+                                                   @RequestBody ProductDto product) {
         ProductDto productDto = productService.updateProduct(productId, product);
+        return ResponseEntity.ok(productDto);
+    }
+
+    @RequestMapping(
+            value = "/{productId}",
+            method = RequestMethod.PATCH,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProductDto> patchProduct(@PathVariable Long productId,
+                                                   @RequestBody ProductDto product) {
+        ProductDto productDto = productService.patchProduct(productId, product);
         return ResponseEntity.ok(productDto);
     }
 
@@ -60,12 +74,11 @@ public class ProductController {
     }
 
     @RequestMapping(
-            value = "/all",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> productDtoList = productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getProducts() {
+        List<ProductDto> productDtoList = productService.getProducts();
         return ResponseEntity.ok(productDtoList);
     }
 
@@ -74,8 +87,8 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<ProductDto>> getAllProductsByManufacturer(@PathVariable Long manufacturerId) {
-        List<ProductDto> productDtoList = productService.getAllProductsByManufacturer(manufacturerId);
+    public ResponseEntity<List<ProductDto>> getProductsByManufacturer(@PathVariable Long manufacturerId) {
+        List<ProductDto> productDtoList = productService.getProductsByManufacturer(manufacturerId);
         return ResponseEntity.ok(productDtoList);
     }
 

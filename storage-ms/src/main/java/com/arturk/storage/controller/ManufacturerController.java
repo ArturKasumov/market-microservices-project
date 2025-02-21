@@ -18,10 +18,12 @@ public class ManufacturerController {
 
     private final ManufacturerService manufacturerService;
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ManufacturerDto>> getAllManufacturers() {
-        List<ManufacturerDto> manufacturerDtoList = manufacturerService.getAllManufacturers();
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<ManufacturerDto>> getManufacturers() {
+        List<ManufacturerDto> manufacturerDtoList = manufacturerService.getManufacturers();
         return ResponseEntity.ok(manufacturerDtoList);
     }
 

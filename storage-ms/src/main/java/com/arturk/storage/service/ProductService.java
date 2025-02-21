@@ -2,14 +2,17 @@ package com.arturk.storage.service;
 
 import com.arturk.storage.convertor.ProductConvertor;
 import com.arturk.storage.dto.ProductDto;
+import com.arturk.storage.entity.ImageEntity;
 import com.arturk.storage.entity.ProductEntity;
 import com.arturk.storage.entity.repository.ManufacturerRepository;
 import com.arturk.storage.entity.repository.ProductRepository;
 import com.arturk.storage.exception.ManufacturerNotFoundException;
 import com.arturk.storage.exception.ProductNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,23 +20,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private ManufacturerRepository manufacturerRepository;
-    @Autowired
-    private ProductConvertor productConvertor;
-    @Autowired
-    private S3BucketService s3BucketService;
+    private final ProductRepository productRepository;
+    private final ManufacturerRepository manufacturerRepository;
+    private final ProductConvertor productConvertor;
+    private final ImageService imageService;
 
     public ProductDto createProduct(ProductDto product) {
         log.debug("Creating product started");
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setName(product.getName());
-        productEntity.setQuantity(product.getQuantity());
-        productEntity.setCategory(product.getCategory());
+        ProductEntity productEntity = productConvertor.toProductEntity(product);
         productEntity.setManufacturer(
                 manufacturerRepository.findById(product.getManufacturerId())
                         .orElseThrow(ManufacturerNotFoundException::new)
@@ -49,30 +46,43 @@ public class ProductService {
         return productConvertor.toProductDto(productEntity);
     }
 
-    public ProductDto updateProduct(Long productId, ProductDto product) {
+    public ProductDto updateProduct(Long productId, ProductDto productDto) {
+        log.debug("Updating product with id: {} started", productId);
         ProductEntity productEntity = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
-        log.debug("Updating product with id: {} started", productEntity.getId());
-        if (product.getName() != null) {
-            productEntity.setName(product.getName());
-        }
-        if (product.getQuantity() != null) {
-            productEntity.setQuantity(product.getQuantity());
-        }
-        if (product.getCategory() != null) {
-            productEntity.setCategory(product.getCategory());
-        }
-        if (product.getPrice() != null) {
-            productEntity.setPrice(product.getPrice());
-        }
-        if (product.getManufacturerId() != null) {
+
+        productConvertor.updateProductEntity(productDto, productEntity);
+
+        if (productDto.getManufacturerId() != null) {
             productEntity.setManufacturer(
-                    manufacturerRepository.findById(product.getManufacturerId())
+                    manufacturerRepository.findById(productDto.getManufacturerId())
+                            .orElseThrow(ManufacturerNotFoundException::new)
+            );
+        } else {
+            productEntity.setManufacturer(null);
+        }
+
+        productEntity = productRepository.save(productEntity);
+        log.debug("Updating product with id: {} finished", productId);
+        return productConvertor.toProductDto(productEntity);
+    }
+
+    public ProductDto patchProduct(Long productId, ProductDto productDto) {
+        log.debug("Patching product with id: {} started", productId);
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+
+        productConvertor.patchProductEntity(productDto, productEntity);
+
+        if (productDto.getManufacturerId() != null) {
+            productEntity.setManufacturer(
+                    manufacturerRepository.findById(productDto.getManufacturerId())
                             .orElseThrow(ManufacturerNotFoundException::new)
             );
         }
-        log.debug("Updating product with id: {} finished", productEntity.getId());
+
         productEntity = productRepository.save(productEntity);
+        log.debug("Patching product with id: {} finished", productId);
         return productConvertor.toProductDto(productEntity);
     }
 
@@ -80,14 +90,14 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDto> getProducts() {
         return productRepository.findAll()
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductDto> getAllProductsByManufacturer(Long manufacturerId) {
+    public List<ProductDto> getProductsByManufacturer(Long manufacturerId) {
         return productRepository.getAllByManufacturerId(manufacturerId)
                 .stream()
                 .map(productConvertor::toProductDto)
@@ -100,7 +110,14 @@ public class ProductService {
         return productEntity.getPrice();
     }
 
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class
+    )
     public void uploadImagesForProduct(Long productId, MultipartFile[] productImages) {
-
+        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        for (MultipartFile productImage : productImages) {
+            imageService.saveImageEntity(productId, productImage);
+        }
     }
 }
