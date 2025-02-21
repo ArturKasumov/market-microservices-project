@@ -45,17 +45,17 @@ public class CustomerService {
         customerRepository.deleteById(customerId);
     }
 
-    public void credit(Long customerId, Integer amount) {
-        CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
-        customerEntity.setAmountOfMoney(customerEntity.getAmountOfMoney() + amount);
-        customerRepository.save(customerEntity);
+    public void creditCustomer(Long customerId, Double amount) {
+        CustomerEntity customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        customer.credit(amount);
+        customerRepository.save(customer);
     }
 
-    public void debit(Long customerId, Integer amount) {
-        CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
-        if(customerEntity.getAmountOfMoney() < amount) {
-            throw new MoneyNotAvailableException();
-        }
-        customerEntity.setAmountOfMoney(customerEntity.getAmountOfMoney() - amount);
+    public void debitCustomer(Long customerId, Double amount) {
+        CustomerEntity customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        customer.debit(amount);
+        customerRepository.save(customer);
     }
 }

@@ -19,3 +19,12 @@ spring:
     properties:
       hibernate:
         default_schema: customer
+kafka:
+  bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER:127.0.0.1:29092}
+  group-id: customer-ms-dev
+  topic-name:
+    storage_available: storage_available_dev
+    payment_event: payment_event_dev
+storage-ms:
+  product:
+    url: ${STORAGE_MS_PRODUCT_URL:http://127.0.0.1:1010/api/v4/product}

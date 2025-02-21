@@ -24,4 +24,8 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="0.0.1-3" author="arturk">
+        <modifyDataType tableName="CUSTOMER" columnName="AMOUNT_MONEY" newDataType="FLOAT"/>
+    </changeSet>
+
 </databaseChangeLog>

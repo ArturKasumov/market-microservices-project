@@ -31,8 +31,20 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/{customerId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> getAllCustomers(@PathVariable Long customerId) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long customerId) {
         customerService.deleteCustomerById(customerId);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{customerId}/credit", method = RequestMethod.POST)
+    public ResponseEntity<Void> creditCustomer(@PathVariable Long customerId, @RequestBody Double amount) {
+        customerService.creditCustomer(customerId, amount);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{customerId}/debit", method = RequestMethod.POST)
+    public ResponseEntity<Void> debitCustomer(@PathVariable Long customerId, @RequestBody Double amount) {
+        customerService.debitCustomer(customerId, amount);
         return ResponseEntity.ok().build();
     }
 }

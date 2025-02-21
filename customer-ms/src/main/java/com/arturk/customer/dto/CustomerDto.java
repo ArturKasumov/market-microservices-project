@@ -15,5 +15,5 @@ public class CustomerDto {
     private String name;
 
     @NotNull(message = "AmountOfMoney must be filled")
-    private Integer amountOfMoney;
+    private Double amountOfMoney;
 }

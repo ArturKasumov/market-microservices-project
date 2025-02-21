@@ -27,12 +27,13 @@
     <properties>
         <java.version>21</java.version>
         <lombok.version>1.18.34</lombok.version>
-        <kafka.version>3.2.4</kafka.version>
+        <kafka.version>3.3.0</kafka.version>
         <hibernate.version>6.6.1.Final</hibernate.version>
         <liquibase.version>4.29.2</liquibase.version>
         <postgresql.version>42.7.4</postgresql.version>
         <mapstruct.version>1.6.2</mapstruct.version>
         <logstash.version>8.0</logstash.version>
+        <openfeign.version>4.1.3</openfeign.version>
     </properties>
 
     <dependencyManagement>
@@ -41,6 +42,11 @@
                 <groupId>org.springframework.kafka</groupId>
                 <artifactId>spring-kafka</artifactId>
                 <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${openfeign.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>

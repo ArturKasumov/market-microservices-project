@@ -48,4 +48,10 @@
         </loadData>
     </changeSet>
 
+    <changeSet id="0.0.1-5" author="arturk">
+       <addColumn tableName="PRODUCT">
+           <column name="PRICE" type="FLOAT"/>
+       </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

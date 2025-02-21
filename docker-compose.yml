@@ -92,67 +92,71 @@ services:
       - market-app-network
 
 
-  #  zookeeper:
-  #    image: confluentinc/cp-zookeeper:latest
-  #    container_name: zookeeper-container
-  #    restart: unless-stopped
-  #    networks:
-  #      - food-delivery-network
-  #    ports:
-  #      - "2181:2181"
-  #    environment:
-  #      ZOOKEEPER_CLIENT_PORT: 2181
-  #
-  #
-  #  kafka:
-  #    image: confluentinc/cp-kafka:latest
-  #    container_name: kafka-container
-  #    restart: unless-stopped
-  #    depends_on:
-  #      - zookeeper
-  #    networks:
-  #      - food-delivery-network
-  #    ports:
-  #      - "29092:29092"
-  #    environment:
-  #      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-  #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-  #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  #
-  #  init-kafka:
-  #    image: confluentinc/cp-kafka:latest
-  #    depends_on:
-  #      - kafka
-  #    entrypoint: [ '/bin/sh', '-c' ]
-  #    networks:
-  #      - food-delivery-network
-  #    command: |
-  #      "
-  #      # blocks until kafka is reachable
-  #      kafka-topics --bootstrap-server kafka:9092 --list
-  #
-  #      echo -e 'Creating kafka topics'
-  #      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic dev_orders --replication-factor 1 --partitions 2
-  #
-  #      echo -e 'Successfully created the following topics:'
-  #      kafka-topics --bootstrap-server kafka:9092 --list
-  #      "
-  #
-  #  kafka-ui:
-  #    image: provectuslabs/kafka-ui:latest
-  #    container_name: kafka-ui-container
-  #    restart: unless-stopped
-  #    depends_on:
-  #      - kafka
-  #    networks:
-  #      - food-delivery-network
-  #    ports:
-  #      - "9081:8080"
-  #    environment:
-  #      KAFKA_CLUSTERS_0_NAME: local
-  #      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
-  #
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper-container
+    restart: unless-stopped
+    networks:
+      - market-app-network
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-container
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    networks:
+      - market-app-network
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    networks:
+      - market-app-network
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order_created_dev --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic storage_event_dev --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic payment_event_dev --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic storage_available_dev --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic storage_recovery_event_dev --replication-factor 1 --partitions 3
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:9092 --list
+      "
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-container
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    networks:
+      - market-app-network
+    ports:
+      - "9081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+
   mongo:
     container_name: mongo_container
     image: mongo:latest

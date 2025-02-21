@@ -1,6 +1,7 @@
 package com.arturk.storage.service;
 
 import com.arturk.common.exception.BusinessMarketAppException;
+import com.arturk.common.exception.CommonExceptionHandler;
 import com.arturk.common.exception.RestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,21 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class StorageExceptionHandler {
+public class StorageExceptionHandler extends CommonExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BusinessMarketAppException.class)
-    public ResponseEntity<RestException> handleCustomerNotFound(BusinessMarketAppException exception) {
-        log.error("Error occurred", exception);
-        RestException restException = new RestException(exception.getCode(), exception.getDescription(), exception.getDetails());
-        return new ResponseEntity<>(restException, HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<RestException> handleException(Exception exception) {
-        log.error("Error occurred", exception);
-        RestException restException = new RestException(exception.getMessage());
-        return new ResponseEntity<>(restException, HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-    }
 }

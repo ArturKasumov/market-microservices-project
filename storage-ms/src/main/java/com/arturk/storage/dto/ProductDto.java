@@ -16,5 +16,7 @@ public class ProductDto {
 
     private Integer quantity;
 
+    private Double price;
+
     private ProductCategoryEnum category;
 }
