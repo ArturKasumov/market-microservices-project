@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class ProductEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID")
+    @NotAudited
     private List<ImageEntity> images = new ArrayList<>();
 
     public void increaseQuantity(int quantity) {

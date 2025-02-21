@@ -3,11 +3,11 @@ package com.arturk.storage.service;
 import com.arturk.storage.entity.repository.ManufacturerRepository;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,6 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,18 +25,16 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReportService {
 
-    @Value("${reports.location}")
+    @Value("${app.reports.location}")
     private String reportLocation;
 
-    @Autowired
-    private ManufacturerRepository manufacturerRepository;
+    private final ManufacturerRepository manufacturerRepository;
+    private final S3BucketService s3BucketService;
 
-    @Autowired
-    private S3Client s3Client;
-
-    public void generateManufacturerPDFReport() {
+    public void generateManufacturerPdfReport() {
         Document document = new Document();
 
         LocalDate currentDate = LocalDate.now();
@@ -61,12 +58,7 @@ public class ReportService {
             throw new RuntimeException(e.getMessage());
         }
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket("storage-ms-reports")
-                .key(fileName)
-                .build();
-
-        s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath));
+        s3BucketService.uploadFile(fileName, filePath);
     }
 
     private void addTableHeader(PdfPTable table) {

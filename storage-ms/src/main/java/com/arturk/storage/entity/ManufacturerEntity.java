@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,6 +26,6 @@ public class ManufacturerEntity {
     @Column(name = "NAME")
     private String name;
 
-    @OneToMany(mappedBy = "manufacturer", fetch = FetchType.LAZY)
-    private List<ProductEntity> products;
+    @OneToMany(mappedBy = "manufacturer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ProductEntity> products = new ArrayList<>();
 }
