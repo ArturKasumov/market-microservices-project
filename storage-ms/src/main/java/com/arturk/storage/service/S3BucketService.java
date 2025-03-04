@@ -13,9 +13,9 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class S3BucketService {
 
-    @Value("${app.s3.bucket-name.images}")
+    @Value("${spring.cloud.aws.s3.bucket-name.images}")
     private String imagesBucket;
-    @Value("${app.s3.bucket-name.reports}")
+    @Value("${spring.cloud.aws.s3.bucket-name.reports}")
     private String reportBucket;
     @Value("${spring.cloud.aws.s3.region}")
     private String region;

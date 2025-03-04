@@ -2,7 +2,6 @@ package com.arturk.storage.service;
 
 import com.arturk.storage.convertor.ProductConvertor;
 import com.arturk.storage.dto.ProductDto;
-import com.arturk.storage.entity.ImageEntity;
 import com.arturk.storage.entity.ProductEntity;
 import com.arturk.storage.entity.repository.ManufacturerRepository;
 import com.arturk.storage.entity.repository.ProductRepository;
@@ -115,9 +114,15 @@ public class ProductService {
             rollbackFor = Exception.class
     )
     public void uploadImagesForProduct(Long productId, MultipartFile[] productImages) {
-        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        if (!productExists(productId)) {
+            throw new ProductNotFoundException();
+        }
         for (MultipartFile productImage : productImages) {
             imageService.saveImageEntity(productId, productImage);
         }
+    }
+
+    private boolean productExists(Long productId) {
+        return productRepository.existsById(productId);
     }
 }

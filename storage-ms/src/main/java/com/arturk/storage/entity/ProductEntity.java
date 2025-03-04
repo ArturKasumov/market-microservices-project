@@ -53,7 +53,7 @@ public class ProductEntity {
     }
 
     public void decreaseQuantity(int quantity) {
-        if(this.quantity < quantity) {
+        if (this.quantity < quantity) {
             throw new NotEnoughAvailableProductException();
         }
         this.quantity -= quantity;

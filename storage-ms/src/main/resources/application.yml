@@ -8,6 +8,9 @@ spring:
     aws:
       s3:
         region: us-east-1
+        bucket-name:
+          images: product-images
+          reports: product-reports
       credentials:
         secret-key: ${AWS_SECRET_KEY:1234}
         access-key: ${AWS_ACCESS_KEY:1234}
@@ -26,5 +29,15 @@ spring:
     properties:
       hibernate:
         default_schema: storage
-reports:
-  location: storage-ms/target/generated-files/
+kafka:
+  bootstrap-server: ${KAFKA_BOOTSTRAP_SERVER:127.0.0.1:29092}
+  group-id: storage-ms-dev
+  topic-name:
+    order_created: order_created_dev
+    storage_event: storage_event_dev
+    storage_recovery_event: storage_recovery_event_dev
+    storage_available: storage_available_dev
+
+app:
+  reports:
+    location: storage-ms/target/generated-files/
