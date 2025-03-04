@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -20,17 +22,18 @@ public class CustomerEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "AMOUNT_MONEY")
-    private Double amountOfMoney;
+    @Column(name = "AMOUNT_MONEY",
+            precision = 10, scale = 2)
+    private BigDecimal amountOfMoney;
 
     public void credit(double amount) {
-        this.setAmountOfMoney(this.getAmountOfMoney() + amount);
+        this.setAmountOfMoney(this.getAmountOfMoney().add(BigDecimal.valueOf(amount)));
     }
 
     public void debit(double amount) {
-        if (this.getAmountOfMoney() < amount) {
+        if (this.getAmountOfMoney().compareTo(BigDecimal.valueOf(amount)) < 0) {
             throw new MoneyNotAvailableException();
         }
-        this.setAmountOfMoney(this.getAmountOfMoney() - amount);
+        this.setAmountOfMoney(this.getAmountOfMoney().subtract(BigDecimal.valueOf(amount)));
     }
 }
