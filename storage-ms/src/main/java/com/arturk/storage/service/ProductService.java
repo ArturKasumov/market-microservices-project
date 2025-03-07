@@ -2,7 +2,6 @@ package com.arturk.storage.service;
 
 import com.arturk.storage.convertor.ProductConvertor;
 import com.arturk.storage.dto.ProductDto;
-import com.arturk.storage.entity.ImageEntity;
 import com.arturk.storage.entity.ProductEntity;
 import com.arturk.storage.entity.repository.ManufacturerRepository;
 import com.arturk.storage.entity.repository.ProductRepository;
@@ -10,6 +9,7 @@ import com.arturk.storage.exception.ManufacturerNotFoundException;
 import com.arturk.storage.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,15 +90,15 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public List<ProductDto> getProducts() {
-        return productRepository.findAll()
+    public List<ProductDto> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductDto> getProductsByManufacturer(Long manufacturerId) {
-        return productRepository.getAllByManufacturerId(manufacturerId)
+    public List<ProductDto> getProductsByManufacturer(Long manufacturerId, Pageable pageable) {
+        return productRepository.getAllByManufacturerId(manufacturerId, pageable)
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());
@@ -115,9 +115,15 @@ public class ProductService {
             rollbackFor = Exception.class
     )
     public void uploadImagesForProduct(Long productId, MultipartFile[] productImages) {
-        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        if (!productExists(productId)) {
+            throw new ProductNotFoundException();
+        }
         for (MultipartFile productImage : productImages) {
             imageService.saveImageEntity(productId, productImage);
         }
+    }
+
+    private boolean productExists(Long productId) {
+        return productRepository.existsById(productId);
     }
 }

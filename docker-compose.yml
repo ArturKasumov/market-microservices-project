@@ -174,41 +174,54 @@ services:
       - 27017:27017
     networks:
       - market-app-network
-#
-#  redis:
-#    image: redis:latest
-#    container_name: redis_container
-#    restart: unless-stopped
-#    environment:
-#      # Пароль для Redis (имя пользователя по умолчанию - default)
-#      - REDIS_PASSWORD=pwd
-#      - REDIS_USER=arturk
-#      - REDIS_USER_PASSWORD=arturk2308
-#    ports:
-#      - "6379:6379"
-#    volumes:
-#      - ./redisdata:/data
-#    networks:
-#      - food-delivery-network
-#    command: >
-#      sh -c '
-#        mkdir -p /usr/local/etc/redis &&
-#        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
-#        echo "requirepass pwd" >> /usr/local/etc/redis/redis.conf &&
-#        echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
-#        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
-#        echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
-#        echo "user arturk on >arturk2308 ~* +@all" >> /usr/local/etc/redis/users.acl &&
-#        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
-#      '
-##mkdir -p /usr/local/etc/redis: Эта команда создает директорию /usr/local/etc/redis, если она не существует. Флаг -p позволяет создавать вложенные директории при необходимости.
-##echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf: Здесь мы добавляем строку "bind 0.0.0.0" в файл redis.conf. Это позволяет Redis прослушивать соединения со всех IP-адресов.
-##echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf: Эта команда добавляет строку с паролем в файл redis.conf. Пароль берется из переменной окружения $REDIS_PASSWORD.
-##echo "appendonly yes" >> /usr/local/etc/redis/redis.conf: Здесь мы включаем режим журнала (append-only mode) для сохранения данных на диск.
-##echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf: Эта строка указывает Redis выполнять синхронизацию журнала с диском каждую секунду.
-##echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl: Здесь мы создаем файл users.acl и добавляем правило доступа для пользователя по умолчанию. Он может подключаться без пароля и имеет доступ ко всем командам (~* +@all).
-##echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl: Эта команда добавляет правило доступа для конкретного пользователя (с именем, указанным в переменной $REDIS_USER). Пользователь должен предоставить пароль из переменной $REDIS_USER_PASSWORD.
-##redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl: Здесь мы запускаем Redis-сервер с указанным файлом конфигурации и файлом ACL.
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    restart: unless-stopped
+    environment:
+      # Пароль для Redis (имя пользователя по умолчанию - default)
+      - REDIS_PASSWORD=pwd
+      - REDIS_USER=arturk
+      - REDIS_USER_PASSWORD=arturk2308
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redisdata:/data
+    networks:
+      - market-app-network
+    command: >
+      sh -c '
+        mkdir -p /usr/local/etc/redis &&
+        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
+        echo "requirepass pwd" >> /usr/local/etc/redis/redis.conf &&
+        echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
+        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
+        echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
+        echo "user arturk on >arturk2308 ~* +@all" >> /usr/local/etc/redis/users.acl &&
+        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
+      '
+#mkdir -p /usr/local/etc/redis: Эта команда создает директорию /usr/local/etc/redis, если она не существует. Флаг -p позволяет создавать вложенные директории при необходимости.
+#echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf: Здесь мы добавляем строку "bind 0.0.0.0" в файл redis.conf. Это позволяет Redis прослушивать соединения со всех IP-адресов.
+#echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf: Эта команда добавляет строку с паролем в файл redis.conf. Пароль берется из переменной окружения $REDIS_PASSWORD.
+#echo "appendonly yes" >> /usr/local/etc/redis/redis.conf: Здесь мы включаем режим журнала (append-only mode) для сохранения данных на диск.
+#echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf: Эта строка указывает Redis выполнять синхронизацию журнала с диском каждую секунду.
+#echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl: Здесь мы создаем файл users.acl и добавляем правило доступа для пользователя по умолчанию. Он может подключаться без пароля и имеет доступ ко всем командам (~* +@all).
+#echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl: Эта команда добавляет правило доступа для конкретного пользователя (с именем, указанным в переменной $REDIS_USER). Пользователь должен предоставить пароль из переменной $REDIS_USER_PASSWORD.
+#redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl: Здесь мы запускаем Redis-сервер с указанным файлом конфигурации и файлом ACL.
+
+
+  redis_insight:
+    image: redislabs/redisinsight:1.14.0
+    container_name: redis_insight
+    restart: unless-stopped
+    ports:
+      - 8001:8001
+    networks:
+      - market-app-network
+
+
+
 
 volumes:
   market_db_data:
