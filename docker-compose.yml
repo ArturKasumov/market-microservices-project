@@ -211,11 +211,14 @@ services:
 #redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl: Здесь мы запускаем Redis-сервер с указанным файлом конфигурации и файлом ACL.
 
 
-  redis-insight:
-    image: redis/redisinsight:latest
-    restart: always
+  redis_insight:
+    image: redislabs/redisinsight:1.14.0
+    container_name: redis_insight
+    restart: unless-stopped
     ports:
-      - "5540:5540"
+      - 8001:8001
+
+
 
 
 volumes:
