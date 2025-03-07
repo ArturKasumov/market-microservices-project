@@ -4,5 +4,6 @@
                    logicalFilePath="liquibase/master.xml">
 
     <include relativeToChangelogFile="true" file="0.0.1/0.0.1.xml"/>
+    <include relativeToChangelogFile="true" file="0.0.2/0.0.2.xml"/>
 
 </databaseChangeLog>

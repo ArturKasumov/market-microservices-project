@@ -1,0 +1,12 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.26.xsd"
+                   logicalFilePath="liquibase/0.0.2/0.0.2.xml">
+
+    <changeSet id="0.0.2-1" author="arturk">
+        <modifyDataType tableName="CUSTOMER"
+                        columnName="AMOUNT_MONEY"
+                        newDataType="NUMERIC(10,2)"/>
+    </changeSet>
+
+</databaseChangeLog>
