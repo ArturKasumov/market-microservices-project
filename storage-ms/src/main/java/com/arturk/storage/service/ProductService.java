@@ -9,6 +9,7 @@ import com.arturk.storage.exception.ManufacturerNotFoundException;
 import com.arturk.storage.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,15 +90,15 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public List<ProductDto> getProducts() {
-        return productRepository.findAll()
+    public List<ProductDto> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductDto> getProductsByManufacturer(Long manufacturerId) {
-        return productRepository.getAllByManufacturerId(manufacturerId)
+    public List<ProductDto> getProductsByManufacturer(Long manufacturerId, Pageable pageable) {
+        return productRepository.getAllByManufacturerId(manufacturerId, pageable)
                 .stream()
                 .map(productConvertor::toProductDto)
                 .collect(Collectors.toList());

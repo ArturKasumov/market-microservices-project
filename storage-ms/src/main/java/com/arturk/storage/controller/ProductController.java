@@ -3,6 +3,7 @@ package com.arturk.storage.controller;
 import com.arturk.storage.dto.ProductDto;
 import com.arturk.storage.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,8 +78,8 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<ProductDto>> getProducts() {
-        List<ProductDto> productDtoList = productService.getProducts();
+    public ResponseEntity<List<ProductDto>> getProducts(Pageable pageable) {
+        List<ProductDto> productDtoList = productService.getProducts(pageable);
         return ResponseEntity.ok(productDtoList);
     }
 
@@ -87,8 +88,8 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<ProductDto>> getProductsByManufacturer(@PathVariable Long manufacturerId) {
-        List<ProductDto> productDtoList = productService.getProductsByManufacturer(manufacturerId);
+    public ResponseEntity<List<ProductDto>> getProductsByManufacturer(@PathVariable Long manufacturerId, Pageable pageable) {
+        List<ProductDto> productDtoList = productService.getProductsByManufacturer(manufacturerId, pageable);
         return ResponseEntity.ok(productDtoList);
     }
 
